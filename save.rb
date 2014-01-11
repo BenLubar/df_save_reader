@@ -21,6 +21,12 @@ class IO
   def read_uint32
     self.read_unpack 4, 'L<'
   end
+  def read_int64
+    self.read_unpack 8, 'q<'
+  end
+  def read_uint64
+    self.read_unpack 8, 'Q<'
+  end
   def read_string
     self.read(self.read_uint16).force_encoding(Encoding::CP437).encode!(Encoding::UTF_8)
   end
@@ -65,7 +71,7 @@ class Name
     # TODO: word forms and languages
 
     words = @word_index.map do |i|
-      $word_string_table[i].capitalize unless i == -1
+      $string_tables[:word][i].capitalize unless i == -1
     end
 
     name = ""
@@ -110,7 +116,7 @@ open '/home/user/df_linux/data/save/adventure-ngutegróth/world.dat', 'rb' do |f
   end
 
   name = f.read_optional do f.read_name end
-  p name
+  puts "Name: #{name.inspect}"
 
   tmp = f.read_uint8
   puts "Field A-24: #{tmp}"
@@ -135,20 +141,85 @@ open '/home/user/df_linux/data/save/adventure-ngutegróth/world.dat', 'rb' do |f
   end
   p generated_raws
 
-  string_tables = 20.times.map do
-    f.read_list do
+  $string_tables = Hash[[:inorganic, :plant, :body, :bodygloss, :creature, :item, :building, :entity, :word, :symbol, :translation, :color, :shape, :color_pattern, :reaction, :material_template, :tissue_template, :body_detail_plan, :creature_variation, :interaction].map do |name|
+    [name, f.read_list do
       f.read_string
-    end
-  end
-  $word_string_table = string_tables[8]
+    end]
+  end]
 
-  string_tables.each.with_index do |table, i|
+  $string_tables.each do |i, table|
     p i, table
   end
 
   puts "World full name: #{world_name}#{name}"
 
-  100.times do puts f.read_uint16.to_s(16) end
+  tmp = Hash[f.read_list do [f.read_uint32, f.read_uint32] end]
+  puts "Field B-1: (size=#{tmp.size}) #{tmp.inspect}"
+
+  tmp = f.read_uint32
+  case tmp
+  when 0
+    puts "Field B-2: #{tmp}"
+  else
+    raise Exception, "Unexpected value for field B-2: #{tmp}"
+  end
+
+  3.times do |i|
+    tmp = f.read_list do f.read_uint32 end
+    puts "Field B-#{i + 3}: (size=#{tmp.size}) #{tmp.inspect}"
+  end
+
+  6.times do |i|
+    tmp = f.read_uint32
+    case tmp
+    when 0
+      puts "Field B-#{i + 6}: #{tmp}"
+    else
+      raise Exception, "Unexpected value for field B-#{i + 6}: #{tmp}"
+    end
+  end
+
+  2.times do |i|
+    tmp = f.read_list do f.read_uint32 end
+    puts "Field B-#{i + 12}: (size=#{tmp.size}) #{tmp.inspect}"
+  end
+
+  3.times do |i|
+    tmp = f.read_uint32
+    case tmp
+    when 0
+      puts "Field B-#{i + 14}: #{tmp}"
+    else
+      raise Exception, "Unexpected value for field B-#{i + 14}: #{tmp}"
+    end
+  end
+
+  2.times do
+  tmp = f.read_uint64
+  case tmp
+  when 0x8ad08ad08ad0
+    puts "Field C-1: #{f.read_uint16}"
+    10.times do |i|
+      tmp = f.read_int32
+      puts "Field C-#{i + 2}: #{tmp}"
+    end
+    puts "Field C-12: #{f.read_uint8}"
+    21.times do |i|
+      tmp = f.read_int16
+      puts "Field C-#{i + 13}: #{tmp}"
+    end
+    tmp = f.read_string
+    puts "Field C-34: (size=#{tmp.size}) #{tmp.inspect}"
+    3.times do |i|
+      tmp = f.read_int16
+      puts "Field C-#{i + 35}: #{tmp}"
+    end
+  else
+    raise Exception, "Unexpected value for field C-0: #{tmp}"
+  end
+  end
+
+  100.times do puts f.read_uint16.to_s(16).rjust(4, '0') end
 end
 
 # vim: set tabstop=2 expandtab:
