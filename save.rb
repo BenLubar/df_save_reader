@@ -43,7 +43,7 @@ class IO
     when 1
       yield
     else
-      raise Exception, "Unexpected value for boolean: #{tmp}"
+      raise "Unexpected value for boolean: #{tmp}"
     end
   end
   def read_name
@@ -92,9 +92,9 @@ class Name
   end
 end
 
-open '/home/user/df_linux/data/save/adventure-ngutegróth/world.dat', 'rb' do |f|
+open '/home/user/df_linux/data/save/legends-thadar-rabin/world.dat', 'rb' do |f|
   version = f.read_uint32
-  raise Exception, "Unexpected save version #{version}" unless version == 1404
+  raise "Unexpected save version #{version}" unless version == 1404
   puts "Version: #{version}"
 
   tmp = f.read_uint32
@@ -102,13 +102,13 @@ open '/home/user/df_linux/data/save/adventure-ngutegróth/world.dat', 'rb' do |f
   when 0
     puts "Not compressed"
   when 1
-    raise Exception, "TODO: compressed saves"
+    raise "TODO: compressed saves"
   else
-    raise Exception, "Unexpected compression state: #{tmp}"
+    raise "Unexpected compression state: #{tmp}"
   end
 
   tmp = f.read_uint16
-  raise Exception, "Unexpected non-zero value for field 0: #{tmp}" unless tmp == 0
+  raise "Unexpected non-zero value for field 0: #{tmp}" unless tmp == 0
 
   23.times do |i|
     tmp = f.read_int32
@@ -139,7 +139,7 @@ open '/home/user/df_linux/data/save/adventure-ngutegróth/world.dat', 'rb' do |f
       end
     end
   end
-  p generated_raws
+  #p generated_raws
 
   $string_tables = Hash[[:inorganic, :plant, :body, :bodygloss, :creature, :item, :building, :entity, :word, :symbol, :translation, :color, :shape, :color_pattern, :reaction, :material_template, :tissue_template, :body_detail_plan, :creature_variation, :interaction].map do |name|
     [name, f.read_list do
@@ -147,9 +147,9 @@ open '/home/user/df_linux/data/save/adventure-ngutegróth/world.dat', 'rb' do |f
     end]
   end]
 
-  $string_tables.each do |i, table|
-    p i, table
-  end
+  #$string_tables.each do |i, table|
+  #  p i, table
+  #end
 
   puts "World full name: #{world_name}#{name}"
 
@@ -161,40 +161,14 @@ open '/home/user/df_linux/data/save/adventure-ngutegróth/world.dat', 'rb' do |f
   when 0
     puts "Field B-2: #{tmp}"
   else
-    raise Exception, "Unexpected value for field B-2: #{tmp}"
+    raise "Unexpected value for field B-2: #{tmp}"
   end
 
-  3.times do |i|
+  14.times do |i|
     tmp = f.read_list do f.read_uint32 end
     puts "Field B-#{i + 3}: (size=#{tmp.size}) #{tmp.inspect}"
   end
 
-  6.times do |i|
-    tmp = f.read_uint32
-    case tmp
-    when 0
-      puts "Field B-#{i + 6}: #{tmp}"
-    else
-      raise Exception, "Unexpected value for field B-#{i + 6}: #{tmp}"
-    end
-  end
-
-  2.times do |i|
-    tmp = f.read_list do f.read_uint32 end
-    puts "Field B-#{i + 12}: (size=#{tmp.size}) #{tmp.inspect}"
-  end
-
-  3.times do |i|
-    tmp = f.read_uint32
-    case tmp
-    when 0
-      puts "Field B-#{i + 14}: #{tmp}"
-    else
-      raise Exception, "Unexpected value for field B-#{i + 14}: #{tmp}"
-    end
-  end
-
-  2.times do
   tmp = f.read_uint64
   case tmp
   when 0x8ad08ad08ad0
@@ -215,8 +189,7 @@ open '/home/user/df_linux/data/save/adventure-ngutegróth/world.dat', 'rb' do |f
       puts "Field C-#{i + 35}: #{tmp}"
     end
   else
-    raise Exception, "Unexpected value for field C-0: #{tmp}"
-  end
+    raise "Unexpected value for field C-0: #{tmp}"
   end
 
   100.times do puts f.read_uint16.to_s(16).rjust(4, '0') end

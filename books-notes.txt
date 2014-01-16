@@ -1,3 +1,4 @@
+the byte sequence d0 8a d0 8a d0 8a 00 00
 a 32-bit bitfield - 0x00000804 has 6 bytes at the end that 0x00000004 doesn't. (A)
 there are 48 bits, all of them zeroes.
 there's a 32 bit integer that monotonically increases. (B)
