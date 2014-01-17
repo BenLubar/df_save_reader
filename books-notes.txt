@@ -10,14 +10,22 @@ the 16 bit integer 0x2742 (ASCII B', which looks like "Book"(?))
 the following 32 bit integers: 0, 0, -1.
 16 bit integer. (C)
 32 bit signed integer. (D)
-the following 16 bit integers: -1, 0, 0, 0.
+the following 16 bit integer: -1.
+
+16 bit integer. (G)
+if G is 0, this is a book and the string H is a title.
+if G is 5, this is a slab and the string H is a description.
+A will have the 0x800 bit set iff G is 5.
+
+the following 16 bit integers: 0, 0.
 32 bit integer. (E)
 the following 32 bit integer: -1.
-32 bit integer. (F)
+32 bit integer (bitfield). (F)
 
-if F is 0,
-	(no additional fields)
-if F is 1,
+
+if F & 2,
+	0700 0000 a501 3600 0000 ffff ffff ffff ffff 0000 0000 0000 0000 0000 0600 0000 a501 3600 0000 ffff ffff ffff ffff 0000 0000 0000 0000 0000 ffff ffff ffff ffff ffff 0000 0000 0000 0000 001b
+if F & 1,
 	0900 0000 2600 8702 0000 e305 0000 ffff ffff 0000 0000 0000 0000 0000 1800 0000 0100 0000 0000 0000
 	0900 0000 2600 4a03 0000 e305 0000 ffff ffff 0000 0000 0000 0000 0000 0400 0000 0100 0000 0100 0000
 	0900 0000 2500 1a00 0000 e305 0000 ffff ffff 0000 0000 0000 0000 0000 3d00 0000 0100 0000 0200 0000
@@ -633,8 +641,9 @@ if F is 1,
 	0900 0000 2600 2901 0000 cf0b 0000 ffff ffff 0000 0000 0000 0000 0000 0800 0000 0100 0000 6502 0000
 	0900 0000 2500 af00 0000 6e0b 0000 ffff ffff 0000 0000 0000 0000 0000 9200 0000 0100 0000 6602 0000
 	0900 0000 2600 2302 0000 e50d 0000 ffff ffff 0000 0000 0000 0000 0000 2500 0000 0100 0000 6702 0000
-if F is 3,
-	0700 0000 a501 3600 0000 ffff ffff ffff ffff 0000 0000 0000 0000 0000 0600 0000 a501 3600 0000 ffff ffff ffff ffff 0000 0000 0000 0000 0000 ffff ffff ffff ffff ffff 0000 0000 0000 0000
-	followed by the processing for F=1.
 
+a string. (H)
+
+if A & 0x800
+	six bytes
 
