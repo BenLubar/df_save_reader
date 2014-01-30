@@ -91,15 +91,16 @@ class Book
     if f & 2 == 2
       i = io.read 74
     end
+    j = ''
     if f & 1 == 1
-      i = io.read 40
+      j = io.read 40
     end
 
     h = io.read_string
 
-    j = ''
+    k = ''
     if a & 0x800 == 0x800
-      j = io.read 6
+      k = io.read 6
     end
 
     case g
@@ -117,42 +118,42 @@ class Book
 
     case c
     when 0
-            puts $string_tables[:inorganic][d].downcase
+      puts $string_tables[:inorganic][d].downcase
     when 3
-            raise "Unexpected value for book[D]: #{d} (expected -1)" unless d == -1
-            puts "green glass"
+      raise "Unexpected value for book[D]: #{d} (expected -1)" unless d == -1
+      puts "green glass"
     when 4
-            raise "Unexpected value for book[D]: #{d} (expected -1)" unless d == -1
-            puts "clear glass"
+      raise "Unexpected value for book[D]: #{d} (expected -1)" unless d == -1
+      puts "clear glass"
     when 21, 22
-            puts $string_tables[:creature][d].downcase + " bone"
+      puts $string_tables[:creature][d].downcase + " bone"
     when 25
-            puts $string_tables[:creature][d].downcase + " tooth"
+      puts $string_tables[:creature][d].downcase + " tooth"
     when 36, 37, 38
-            puts $string_tables[:creature][d].downcase + " leather"
+      puts $string_tables[:creature][d].downcase + " leather"
     when 39
-            puts $string_tables[:creature][d].downcase + " shell"
+      puts $string_tables[:creature][d].downcase + " shell"
     when 41
-            puts $string_tables[:creature][d].downcase + " hoof"
+      puts $string_tables[:creature][d].downcase + " hoof"
     when 42
-            puts $string_tables[:creature][d].downcase + " ivory"
+      puts $string_tables[:creature][d].downcase + " ivory"
     when 420
-            puts $string_tables[:plant][d].downcase + " bark"
+      puts $string_tables[:plant][d].downcase + " bark"
     when 421
-            puts $string_tables[:plant][d].downcase + " fiber"
+      puts $string_tables[:plant][d].downcase + " fiber"
     else
-            raise "Unexpected value for book[C]: #{c}"
+      raise "Unexpected value for book[C]: #{c}"
     end
 
+    print "Author: "
     puts e
-    i.each_byte do |b|
-      printf "%02x ", b
+
+    [i, j, k].each do |s|
+      s.each_byte do |b|
+        printf "%02x ", b
+      end
+      puts
     end
-    puts
-    j.each_byte do |b|
-      printf "%02x ", b
-    end
-    puts
     puts
   end
 end
