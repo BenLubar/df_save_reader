@@ -42,14 +42,16 @@ open '/home/user/df_linux/data/save/adventure-ngutegróth/world.dat', 'rb' do |f
   world_name = f.read_string
   puts "World name: #{world_name}"
 
-  generated_raws = 4.times.map do
-    f.read_list do
+  $generated_raws = Hash[[:inorganic, :item, :creature, :interaction].map do |name|
+    [name, f.read_list do
       f.read_list do
         f.read_string
       end
-    end
+    end]
+  end]
+  $generated_raws.each do |i, raws|
+    p i, raws
   end
-  #p generated_raws
 
   $string_tables = Hash[[:inorganic, :plant, :body, :bodygloss, :creature, :item, :building, :entity, :word, :symbol, :translation, :color, :shape, :color_pattern, :reaction, :material_template, :tissue_template, :body_detail_plan, :creature_variation, :interaction].map do |name|
     [name, f.read_list do
@@ -57,9 +59,15 @@ open '/home/user/df_linux/data/save/adventure-ngutegróth/world.dat', 'rb' do |f
     end]
   end]
 
-  #$string_tables.each do |i, table|
-  #  p i, table
-  #end
+  $string_tables.each do |i, table|
+    p i, table
+  end
+
+  $generated_raws.each do |i, raws|
+    raws.each do |raw|
+      $string_tables[i] << raw[2].gsub(/^\[[A-Z]+:|\]$/, '')
+    end
+  end
 
   puts "World full name: #{world_name}#{name}"
 

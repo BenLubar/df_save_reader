@@ -86,24 +86,27 @@ class Book
     f = io.read_uint32
 
     raise "Unexpected value for book[F]: #{f}" if f > 3
+
+    i = ''
     if f & 2 == 2
-      io.read 74 #TODO
+      i = io.read 74
     end
     if f & 1 == 1
-      io.read 40 #TODO
+      i = io.read 40
     end
 
     h = io.read_string
 
+    j = ''
     if a & 0x800 == 0x800
-      io.read 6 #TODO
+      j = io.read 6
     end
 
     case g
     when 0
-      print "[BOOK] "
+      printf "[BOOK:%d] ", b
     when 5
-      print "[SLAB] "
+      printf "[SLAB:%d] ", b
     end
 
     if h.empty?
@@ -111,6 +114,46 @@ class Book
     else
       p h
     end
+
+    case c
+    when 0
+            puts $string_tables[:inorganic][d].downcase
+    when 3
+            raise "Unexpected value for book[D]: #{d} (expected -1)" unless d == -1
+            puts "green glass"
+    when 4
+            raise "Unexpected value for book[D]: #{d} (expected -1)" unless d == -1
+            puts "clear glass"
+    when 21, 22
+            puts $string_tables[:creature][d].downcase + " bone"
+    when 25
+            puts $string_tables[:creature][d].downcase + " tooth"
+    when 36, 37, 38
+            puts $string_tables[:creature][d].downcase + " leather"
+    when 39
+            puts $string_tables[:creature][d].downcase + " shell"
+    when 41
+            puts $string_tables[:creature][d].downcase + " hoof"
+    when 42
+            puts $string_tables[:creature][d].downcase + " ivory"
+    when 420
+            puts $string_tables[:plant][d].downcase + " bark"
+    when 421
+            puts $string_tables[:plant][d].downcase + " fiber"
+    else
+            raise "Unexpected value for book[C]: #{c}"
+    end
+
+    puts e
+    i.each_byte do |b|
+      printf "%02x ", b
+    end
+    puts
+    j.each_byte do |b|
+      printf "%02x ", b
+    end
+    puts
+    puts
   end
 end
 
