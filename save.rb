@@ -2,7 +2,7 @@ require_relative 'io.rb'
 require_relative 'name.rb'
 require_relative 'book.rb'
 
-open '/home/user/df_linux/data/save/adventure-ngutegróth/world.dat', 'rb' do |f|
+open 'adventure-ngutegróth/world.dat', 'rb' do |f|
   version = f.read_uint32
   raise "Unexpected save version #{version}" unless version == 1404
   puts "Version: #{version}"

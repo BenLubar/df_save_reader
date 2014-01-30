@@ -68,6 +68,6 @@ class Raws
   end
 end
 
-$raws = Raws.new '/home/user/df_linux/data/save/adventure-ngutegróth'
+$raws = Raws.new 'adventure-ngutegróth'
 
 # vim: set tabstop=2 expandtab:

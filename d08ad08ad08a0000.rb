@@ -1,4 +1,4 @@
-open '/home/user/df_linux/data/save/adventure-ngutegróth/world.dat', 'rb' do |input|
+open 'adventure-ngutegróth/world.dat', 'rb' do |input|
   data = input.read
   data = data[data.index("\xd0\x8a\xd0\x8a\xd0\x8a\x00\x00".force_encoding(Encoding::BINARY))..-1]
   data = data[0...data.index("SUBTERRANEAN_ANIMAL_PEOPLES".force_encoding(Encoding::BINARY))]
