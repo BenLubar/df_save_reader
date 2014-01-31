@@ -7,6 +7,12 @@ def material_for_type_and_id type, id
   case type
   when 0
     $string_tables[:inorganic][id].downcase
+  when 1
+    raise "Unexpected value for material[ID]: #{id} (expected -1)" unless id == -1
+    "amber"
+  when 2
+    raise "Unexpected value for material[ID]: #{id} (expected -1)" unless id == -1
+    "coral"
   when 3
     raise "Unexpected value for material[ID]: #{id} (expected -1)" unless id == -1
     "green glass"
@@ -16,12 +22,70 @@ def material_for_type_and_id type, id
   when 5
     raise "Unexpected value for material[ID]: #{id} (expected -1)" unless id == -1
     "crystal glass"
+  when 6
+    raise "Unexpected value for material[ID]: #{id} (expected -1)" unless id == -1
+    "water"
+  when 7
+    raise "Unexpected value for material[ID]: #{id} (expected -1)" unless id == -1
+    "coal"
+  when 8
+    raise "Unexpected value for material[ID]: #{id} (expected -1)" unless id == -1
+    "potash"
+  when 9
+    raise "Unexpected value for material[ID]: #{id} (expected -1)" unless id == -1
+    "ash"
+  when 10
+    raise "Unexpected value for material[ID]: #{id} (expected -1)" unless id == -1
+    "pearlash"
+  when 11
+    raise "Unexpected value for material[ID]: #{id} (expected -1)" unless id == -1
+    "lye"
+  when 12
+    raise "Unexpected value for material[ID]: #{id} (expected -1)" unless id == -1
+    "mud"
+  when 13
+    raise "Unexpected value for material[ID]: #{id} (expected -1)" unless id == -1
+    "vomit"
+  when 14
+    raise "Unexpected value for material[ID]: #{id} (expected -1)" unless id == -1
+    "salt"
+  when 15, 16
+    raise "Unexpected value for material[ID]: #{id} (expected -1)" unless id == -1
+    "filth"
+  when 17
+    raise "Unexpected value for material[ID]: #{id} (expected -1)" unless id == -1
+    "unknown substance"
+  when 18
+    raise "Unexpected value for material[ID]: #{id} (expected -1)" unless id == -1
+    "grime"
+  when 19
+    $string_tables[:creature][id].downcase + " skin"
+  when 20
+    $string_tables[:creature][id].downcase + " fat"
   when 21, 22
     $string_tables[:creature][id].downcase + " bone"
   when 23
     $string_tables[:creature][id].downcase + " cartilage"
-  when 25
+  when 24, 25
     $string_tables[:creature][id].downcase + " tooth"
+  when 26
+    $string_tables[:creature][id].downcase + " nerve"
+  when 27
+    $string_tables[:creature][id].downcase + " brain"
+  when 28
+    $string_tables[:creature][id].downcase + " lung"
+  when 29
+    $string_tables[:creature][id].downcase + " heart"
+  when 30
+    $string_tables[:creature][id].downcase + " liver"
+  when 31
+    $string_tables[:creature][id].downcase + " gut"
+  when 32
+    $string_tables[:creature][id].downcase + " stomach"
+  when 33
+    $string_tables[:creature][id].downcase + " gizzard"
+  when 34
+    $string_tables[:creature][id].downcase + " pancreas"
   when 35
     $string_tables[:creature][id].downcase + " spleen"
   when 36, 37, 38
@@ -34,6 +98,18 @@ def material_for_type_and_id type, id
     $string_tables[:creature][id].downcase + " hoof"
   when 42
     $string_tables[:creature][id].downcase + " ivory"
+  when 43
+    $string_tables[:creature][id].downcase + " egg white"
+  when 44
+    $string_tables[:creature][id].downcase + " egg yolk"
+  when 45
+    $string_tables[:creature][id].downcase + " sinew"
+  when 46
+    $string_tables[:creature][id].downcase + " blood"
+  when 47
+    $string_tables[:creature][id].downcase + " pus"
+  when 48
+    $string_tables[:creature][id].downcase + " unknown substance"
   when 420
     $string_tables[:plant][id].downcase + " wood"
   when 421
