@@ -1,6 +1,47 @@
 require_relative 'io.rb'
 require_relative 'name.rb'
 require_relative 'book.rb'
+require_relative 'entity.rb'
+
+def material_for_type_and_id type, id
+  case type
+  when 0
+    $string_tables[:inorganic][id].downcase
+  when 3
+    raise "Unexpected value for material[ID]: #{id} (expected -1)" unless id == -1
+    "green glass"
+  when 4
+    raise "Unexpected value for material[ID]: #{id} (expected -1)" unless id == -1
+    "clear glass"
+  when 5
+    raise "Unexpected value for material[ID]: #{id} (expected -1)" unless id == -1
+    "crystal glass"
+  when 21, 22
+    $string_tables[:creature][id].downcase + " bone"
+  when 23
+    $string_tables[:creature][id].downcase + " cartilage"
+  when 25
+    $string_tables[:creature][id].downcase + " tooth"
+  when 35
+    $string_tables[:creature][id].downcase + " spleen"
+  when 36, 37, 38
+    $string_tables[:creature][id].downcase + " leather"
+  when 39
+    $string_tables[:creature][id].downcase + " shell"
+  when 40
+    $string_tables[:creature][id].downcase + " feather"
+  when 41
+    $string_tables[:creature][id].downcase + " hoof"
+  when 42
+    $string_tables[:creature][id].downcase + " ivory"
+  when 420
+    $string_tables[:plant][id].downcase + " bark"
+  when 421
+    $string_tables[:plant][id].downcase + " fiber"
+  else
+    raise "Unexpected value for material[Type]: #{type}"
+  end
+end
 
 open 'adventure-ngutegróth/world.dat', 'rb' do |f|
   version = f.read_uint32
@@ -71,8 +112,8 @@ open 'adventure-ngutegróth/world.dat', 'rb' do |f|
 
   puts "World full name: #{world_name}#{name}"
 
-  tmp = Hash[f.read_list do [f.read_uint32, f.read_uint32] end]
-  puts "Field B-1: (size=#{tmp.size}) #{tmp.inspect}"
+  artifact_ids = Hash[f.read_list do [f.read_uint32, f.read_uint32] end]
+  puts "Field B-1: (artifact ids) (size=#{artifact_ids.size}) #{artifact_ids.inspect}"
 
   tmp = f.read_uint32
   case tmp
@@ -82,13 +123,20 @@ open 'adventure-ngutegróth/world.dat', 'rb' do |f|
     raise "Unexpected value for field B-2: #{tmp}"
   end
 
-  14.times do |i|
+  entity_ids = f.read_list do f.read_uint32 end
+  puts "Field B-3: (entity ids) (size=#{entity_ids.size}) #{entity_ids.inspect}"
+
+  13.times do |i|
     tmp = f.read_list do f.read_uint32 end
-    puts "Field B-#{i + 3}: (size=#{tmp.size}) #{tmp.inspect}"
+    puts "Field B-#{i + 4}: (size=#{tmp.size}) #{tmp.inspect}"
   end
 
   loop.map do
    f.read_book
+  end
+
+  loop.map do
+   f.read_entity
   end
 
   100.times do puts f.read_uint16.to_s(16).rjust(4, '0') end

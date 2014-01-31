@@ -116,34 +116,7 @@ class Book
       p h
     end
 
-    case c
-    when 0
-      puts $string_tables[:inorganic][d].downcase
-    when 3
-      raise "Unexpected value for book[D]: #{d} (expected -1)" unless d == -1
-      puts "green glass"
-    when 4
-      raise "Unexpected value for book[D]: #{d} (expected -1)" unless d == -1
-      puts "clear glass"
-    when 21, 22
-      puts $string_tables[:creature][d].downcase + " bone"
-    when 25
-      puts $string_tables[:creature][d].downcase + " tooth"
-    when 36, 37, 38
-      puts $string_tables[:creature][d].downcase + " leather"
-    when 39
-      puts $string_tables[:creature][d].downcase + " shell"
-    when 41
-      puts $string_tables[:creature][d].downcase + " hoof"
-    when 42
-      puts $string_tables[:creature][d].downcase + " ivory"
-    when 420
-      puts $string_tables[:plant][d].downcase + " bark"
-    when 421
-      puts $string_tables[:plant][d].downcase + " fiber"
-    else
-      raise "Unexpected value for book[C]: #{c}"
-    end
+    puts material_for_type_and_id(c, d)
 
     print "Author: "
     puts e
