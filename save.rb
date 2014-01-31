@@ -35,7 +35,7 @@ def material_for_type_and_id type, id
   when 42
     $string_tables[:creature][id].downcase + " ivory"
   when 420
-    $string_tables[:plant][id].downcase + " bark"
+    $string_tables[:plant][id].downcase + " wood"
   when 421
     $string_tables[:plant][id].downcase + " fiber"
   else
