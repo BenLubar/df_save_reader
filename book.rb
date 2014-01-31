@@ -59,8 +59,8 @@ class Book
     tmp = io.read_int32
     raise "Unexpected value for book[16]: #{tmp}" unless tmp == -1
 
-    # 16 bit integer. (C)
-    c = io.read_uint16
+    # 16 bit signed integer. (C)
+    c = io.read_int16
 
     # 32 bit signed integer. (D)
     d = io.read_int32
