@@ -22,11 +22,17 @@ class Name
     io.read_int16 # just discard the unknown value for now
   end
 
-  def to_s
-    # TODO: word forms and languages
+  def to_s translate=nil
+    return "#{to_s true} \"#{to_s false}\"" if translate.nil?
 
-    words = @word_index.map do |i|
-      $string_tables[:word][i].capitalize unless i == -1
+    words = @word_index.map.with_index do |i, j|
+      if i == -1
+        nil
+      elsif translate
+        $raws.translations[$string_tables[:translation][@language]][$string_tables[:word][i]]
+      else
+        $raws.words[$string_tables[:word][i]].form @word_form[j]
+      end
     end
 
     name = ""
@@ -34,16 +40,26 @@ class Name
     name << ' "' << nickname << '"' unless nickname.empty?
     name << ' ' << words[0] << words[1] if words[0] or words[1]
     if words[5]
-      name << ' the'
+      name << ' the' unless translate
       name << ' ' << words[2] if words[2]
       name << ' ' << words[3] if words[3]
       name << ' '
       name << words[4] << '-' if words[4]
       name << words[5]
     end
-    name << ' of ' << words[6] if words[6]
+    if words[6]
+      name << ' of ' unless translate
+      name << ' ' << words[6]
+    end
 
-    name
+    # capitalize first to make "the __" names into "The __".
+    name.strip.capitalize.gsub(/\w+/) do |word|
+      if word == "the" or word == "of"
+        word
+      else
+        word.capitalize
+      end
+    end
   end
 end
 

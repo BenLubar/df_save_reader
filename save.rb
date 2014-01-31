@@ -1,3 +1,4 @@
+require_relative 'raws.rb'
 require_relative 'io.rb'
 require_relative 'name.rb'
 require_relative 'book.rb'
@@ -124,6 +125,7 @@ def material_for_type_and_id type, id
   end
 end
 
+$raws = Raws.new 'adventure-ngutegróth'
 open 'adventure-ngutegróth/world.dat', 'rb' do |f|
   begin
     version = f.read_uint32

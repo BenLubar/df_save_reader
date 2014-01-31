@@ -4,13 +4,13 @@ class Raws
   attr_reader :words
   attr_reader :symbols
   attr_reader :translations
-  attr_reader :creatures
+#  attr_reader :creatures
 
   def initialize dir
     @words = {}
     @symbols = {}
     @translations = {}
-    @creatures = {}
+#    @creatures = {}
 
     Dir["#{dir}/raw/objects/*.txt"].each do |fn|
       open fn, 'r:CP437' do |f|
@@ -59,10 +59,10 @@ class Raws
               raise "Duplicate PREFIX:#{word.id}" if word.prefix
               word.prefix = $1
             when /\A\[VERB:([^:\]]*):([^:\]]*):([^:\]]*):([^:\]]*):([^:\]]*)\]\z/
-              raise "Duplicate VERB:#{word.id}" if word.verb_base
-              word.verb_base = $1
-              word.verb_present = $2
-              word.verb_past = $3
+              raise "Duplicate VERB:#{word.id}" if word.verb_present1
+              word.verb_present1 = $1
+              word.verb_present3 = $2
+              word.verb_preterite = $3
               word.verb_past_part = $4
               word.verb_present_part = $5
             when /\A\[(
@@ -79,39 +79,39 @@ class Raws
               raise "Unknown word token: #{r}"
             end
           end
-        when '[OBJECT:CREATURE]'
-          creature = nil
-          data[1..-1].each do |r|
-            case r
-            when /\A\[CREATURE:([^:\]]*)\]\z/
-              creature = Creature.new $1
-              raise "Duplicate CREATURE:#{creature.id}" if @creatures[creature.id]
-              @creatures[creature.id] = creature
-            when /\A\[NAME:([^:\]]*):([^:\]]*):([^:\]]*)\]\z/
-              raise "Duplicate NAME:#{creature.id}" if creature.name_sing
-              creature.name_sing = $1
-              creature.name_plur = $2
-              creature.name_adj = $3
-            when /\A\[CASTE_NAME:([^:\]]*):([^:\]]*):([^:\]]*)\]\z/
-              raise "Duplicate CASTE_NAME:#{creature.id}" if creature.caste_name_sing
-              creature.caste_name_sing = $1
-              creature.caste_name_plur = $2
-              creature.caste_name_adj = $3
-            when /\A\[DESCRIPTION:([^:\]]*)\]\z/
-              raise "Duplicate DESCRIPTION:#{creature.id}" if creature.description
-              creature.description = $1
-            when /\A\[CREATURE_TILE:'\\?([^:\]])'\]\z/
-              raise "Duplicate DESCRIPTION:#{creature.id}" if creature.tile
-              creature.tile = $1
-            when /\A\[CREATURE_TILE:([0-9]+)\]\z/
-              raise "Duplicate DESCRIPTION:#{creature.id}" if creature.tile
-              creature.tile = ("" << $1.to_i).force_encoding(Encoding::CP437).encode(Encoding::UTF_8)
-            else
-              raise "Unknown creature token: #{r}"
-            end
-          end
+#        when '[OBJECT:CREATURE]'
+#          creature = nil
+#          data[1..-1].each do |r|
+#            case r
+#            when /\A\[CREATURE:([^:\]]*)\]\z/
+#              creature = Creature.new $1
+#              raise "Duplicate CREATURE:#{creature.id}" if @creatures[creature.id]
+#              @creatures[creature.id] = creature
+#            when /\A\[NAME:([^:\]]*):([^:\]]*):([^:\]]*)\]\z/
+#              raise "Duplicate NAME:#{creature.id}" if creature.name_sing
+#              creature.name_sing = $1
+#              creature.name_plur = $2
+#              creature.name_adj = $3
+#            when /\A\[CASTE_NAME:([^:\]]*):([^:\]]*):([^:\]]*)\]\z/
+#              raise "Duplicate CASTE_NAME:#{creature.id}" if creature.caste_name_sing
+#              creature.caste_name_sing = $1
+#              creature.caste_name_plur = $2
+#              creature.caste_name_adj = $3
+#            when /\A\[DESCRIPTION:([^:\]]*)\]\z/
+#              raise "Duplicate DESCRIPTION:#{creature.id}" if creature.description
+#              creature.description = $1
+#            when /\A\[CREATURE_TILE:'\\?([^:\]])'\]\z/
+#              raise "Duplicate DESCRIPTION:#{creature.id}" if creature.tile
+#              creature.tile = $1
+#            when /\A\[CREATURE_TILE:([0-9]+)\]\z/
+#              raise "Duplicate DESCRIPTION:#{creature.id}" if creature.tile
+#              creature.tile = ("" << $1.to_i).force_encoding(Encoding::CP437).encode(Encoding::UTF_8)
+#            else
+#              raise "Unknown creature token: #{r}"
+#            end
+#          end
         else
-          raise "Unknown object type: #{data[0]}"
+#          raise "Unknown object type: #{data[0]}"
         end
       end
     end
@@ -123,9 +123,9 @@ class Raws
     attr_accessor :noun_plural
     attr_accessor :adjective
     attr_accessor :prefix
-    attr_accessor :verb_base
-    attr_accessor :verb_present
-    attr_accessor :verb_past
+    attr_accessor :verb_present1
+    attr_accessor :verb_present3
+    attr_accessor :verb_preterite
     attr_accessor :verb_past_part
     attr_accessor :verb_present_part
 
@@ -151,25 +151,46 @@ class Raws
     def initialize id
       @id = id
     end
-  end
 
-  class Creature
-    attr_reader   :id
-    attr_accessor :name_sing
-    attr_accessor :name_plur
-    attr_accessor :name_adj
-    attr_accessor :caste_name_sing
-    attr_accessor :caste_name_plur
-    attr_accessor :caste_name_adj
-    attr_accessor :description
-    attr_accessor :tile
-
-    def initialize id
-      @id = id
+    def form n
+      case n
+      when 0
+        noun_singular
+      when 1
+        noun_plural
+      when 2
+        adjective
+      when 3
+        prefix
+      when 4
+        verb_present1
+      when 5
+        verb_present3
+      when 6
+        verb_preterite
+      when 7
+        verb_past_part
+      when 8
+        verb_present_part
+      end
     end
   end
-end
 
-$raws = Raws.new 'adventure-ngutegróth'
+#  class Creature
+#    attr_reader   :id
+#    attr_accessor :name_sing
+#    attr_accessor :name_plur
+#    attr_accessor :name_adj
+#    attr_accessor :caste_name_sing
+#    attr_accessor :caste_name_plur
+#    attr_accessor :caste_name_adj
+#    attr_accessor :description
+#    attr_accessor :tile
+#
+#    def initialize id
+#      @id = id
+#    end
+#  end
+end
 
 # vim: set tabstop=2 expandtab:
