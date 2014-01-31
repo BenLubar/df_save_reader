@@ -215,7 +215,9 @@ open 'adventure-ngutegróth/world.dat', 'rb' do |f|
    f.read_entity
   end
 
-  100.times do puts f.read_uint16.to_s(16).rjust(4, '0') end
+  IO.popen(["xxd"], "w") do |xxd|
+    xxd.write f.read 1024
+  end
 end
 
 # vim: set tabstop=2 expandtab:
