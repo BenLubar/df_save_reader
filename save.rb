@@ -1,3 +1,5 @@
+require 'zlib'
+require 'tempfile'
 require_relative 'raws.rb'
 require_relative 'io.rb'
 require_relative 'name.rb'
@@ -125,8 +127,8 @@ def material_for_type_and_id type, id
   end
 end
 
-$raws = Raws.new 'adventure-ngutegróth'
-open 'adventure-ngutegróth/world.dat', 'rb' do |f|
+$raws = Raws.new 'thur-num'
+open 'thur-num/world.dat', 'rb' do |f|
   begin
     version = f.read_uint32
     raise "Unexpected save version #{version}" unless version == 1404
@@ -137,7 +139,17 @@ open 'adventure-ngutegróth/world.dat', 'rb' do |f|
     when 0
       puts "Not compressed"
     when 1
-      raise "TODO: compressed saves"
+      puts "Compressed with DEFLATE"
+      tmp = Tempfile.new 'df'
+      begin
+        loop do
+          tmp.write Zlib.inflate f.read f.read_uint32
+        end
+      rescue
+        # do nothing.
+      end
+      f = tmp
+      f.rewind
     else
       raise "Unexpected compression state: #{tmp}"
     end
