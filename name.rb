@@ -48,7 +48,7 @@ class Name
       name << words[5]
     end
     if words[6]
-      name << ' of ' unless translate
+      name << ' of' unless translate
       name << ' ' << words[6]
     end
 
