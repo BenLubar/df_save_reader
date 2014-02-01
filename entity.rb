@@ -70,12 +70,18 @@ class Entity
       [ha, hb]
     end
 
-    h_b = 8.times.map do |h|
-      tmp = io.read_uint32
-      puts "entity[HB#{h}] = #{tmp}"
-      raise "Unexpected value for entity[HB#{h}]: #{tmp}" unless tmp == 0
-      tmp
+    h_b = 3.times.map do |h|
+      h_ba = io.read_list do io.read_int16 end
+      puts "entity[HB#{h}a] = #{h_ba.inspect}"
+      h_bb = io.read_list do io.read_int32 end
+      puts "entity[HB#{h}b] = #{h_bb.inspect}"
+      [h_ba, h_bb]
     end
+    h_b[3] = io.read_int32
+    puts "entity[HB3] = #{h_b[3]}"
+    raise "Unexpected value for entity[HB3]: #{h_b[3]}" unless [0, 0x0007000a].include? h_b[3]
+    h_b[4] = io.read_list do io.read_int32 end
+    puts "entity[HB4] = #{h_b[4].inspect}"
 
     h_c = 7.times.map do |h|
       ha = io.read_list do io.read_uint32 end
@@ -108,11 +114,10 @@ class Entity
       puts "entity[I#{i}] = #{i_.inspect}"
       i_
     end
-
+ 
     j = 3.times.map do |j|
-      tmp = io.read_int32
+      tmp = io.read_list do io.read_int32 end
       puts "entity[J#{j}] = #{tmp}"
-      raise "Unexpected value for entity[J#{j}]: #{tmp} (expected 0)" unless tmp == 0
       tmp
     end
 
@@ -132,25 +137,28 @@ class Entity
     l = 3.times.map do |l|
       la = io.read_int16
       puts "entity[L#{l}a] = #{la}"
-      raise "Unexpected value for entity[L#{l}a]: #{la} (expected -1)" unless la == -1
+      #raise "Unexpected value for entity[L#{l}a]: #{la} (expected -1)" unless la == -1
       lb = io.read_int32
       puts "entity[L#{l}b] = #{lb}"
       #raise "Unexpected value for entity[L#{l}b]: #{lb} (expected 0)" unless lb == 0
       [la, lb]
     end
 
-    lc = io.read_int32
-    puts "entity[Lc] = #{lc}"
-    raise "Unexpected value for entity[Lc]: #{lc} (expected 0)" unless lc == 0
-    l << [lc]
-
-    m = 16.times.map do |m|
+    m = 17.times.map do |m|
       tmp = io.read_list do io.read_int16 end
       puts "entity[M#{m}] = #{tmp.inspect}"
       tmp
     end
 
-    n = 10.times.map do |n|
+    if h_b[3] == 0x0007000a
+      m_b = 5.times.map do |m|
+        tmp = io.read_int16
+        puts "entity[MB#{m}] = #{tmp}"
+        tmp
+      end
+    end
+
+    n = 9.times.map do |n|
       na = io.read_list do io.read_int16 end
       puts "entity[N#{n}a] = #{na.inspect}"
       nb = io.read_list do io.read_int32 end
@@ -167,11 +175,17 @@ class Entity
     o[0] = io.read_uint32
     puts "entity[O0] = #{o[0]}"
     raise "Unexpected value for entity[O0]: #{o[0]} (expected 0)" unless o[0] == 0
-    o[1] = io.read_list do io.read_uint32 end
-    puts "entity[O1] = #{o[1].inspect}"
+    o[1] = io.read_uint32
+    puts "entity[O1] = #{o[1]}"
+    raise "Unexpected value for entity[O1]: #{o[1]} (expected 0)" unless o[1] == 0
     o[2] = io.read_uint32
     puts "entity[O2] = #{o[2]}"
     raise "Unexpected value for entity[O2]: #{o[2]} (expected 0)" unless o[2] == 0
+    o[3] = io.read_list do io.read_uint32 end
+    puts "entity[O3] = #{o[3].inspect}"
+    o[4] = io.read_uint32
+    puts "entity[O4] = #{o[4]}"
+    raise "Unexpected value for entity[O4]: #{o[4]} (expected 0)" unless o[4] == 0
 
     p = []
     pa = io.read_list do io.read_int16 end

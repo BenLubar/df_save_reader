@@ -206,7 +206,7 @@ open 'thur-num/world.dat', 'rb' do |f|
       end
     end
 
-    puts "World full name: #{world_name}#{name}"
+    puts "World full name: #{name}"
 
     artifact_ids = Hash[f.read_list do [f.read_uint32, f.read_uint32] end]
     puts "Field B-1: (artifact ids) (size=#{artifact_ids.size}) #{artifact_ids.inspect}"
