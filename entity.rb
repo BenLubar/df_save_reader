@@ -172,20 +172,16 @@ class Entity
     end
 
     o = []
-    o[0] = io.read_uint32
-    puts "entity[O0] = #{o[0]}"
-    raise "Unexpected value for entity[O0]: #{o[0]} (expected 0)" unless o[0] == 0
-    o[1] = io.read_uint32
-    puts "entity[O1] = #{o[1]}"
-    raise "Unexpected value for entity[O1]: #{o[1]} (expected 0)" unless o[1] == 0
-    o[2] = io.read_uint32
-    puts "entity[O2] = #{o[2]}"
-    raise "Unexpected value for entity[O2]: #{o[2]} (expected 0)" unless o[2] == 0
+    o[0] = io.read_list do [io.read_uint16, io.read_uint32, io.read_uint16] end
+    puts "entity[O0] = #{o[0].inspect}"
+    o[1] = io.read_list do [io.read_uint16, io.read_uint32, io.read_int32, io.read_uint16] end
+    puts "entity[O1] = #{o[1].inspect}"
+    o[2] = io.read_list do io.read_uint32 end
+    puts "entity[O2] = #{o[2].inspect}"
     o[3] = io.read_list do io.read_uint32 end
     puts "entity[O3] = #{o[3].inspect}"
-    o[4] = io.read_uint32
-    puts "entity[O4] = #{o[4]}"
-    raise "Unexpected value for entity[O4]: #{o[4]} (expected 0)" unless o[4] == 0
+    o[4] = io.read_list do io.read_uint32 end
+    puts "entity[O4] = #{o[4].inspect}"
 
     p = []
     pa = io.read_list do io.read_int16 end
@@ -206,22 +202,10 @@ class Entity
     p[1] = [pa, pb]
     # TODO: are these materials?
 
-    q = io.read_uint16
-    puts "entity[Q] = #{q}"
-
-    r_expected = [0x0001, 0x0000, nil, 0x0000, [0x0000, 0x0100], 0x0001, 0x0000, nil, 0x0001, 0x0000, nil, 0x0000, 0x0000, 0x0000, 0x0000, 0xffff, 0xffff, 0xffff, nil, nil, 0xffff, 0xffff, 0xffff, 0xffff, 0x0000, 0x0000, 0x0000, 0x0000, 0x0003, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0d00, 0x0100, 0x0100, 0x0100, 0x0100, 0x0f00, 0x0000, 0x0100, 0x0f00, 0x0f00, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0200, 0x0f00, 0x0f00, 0x0f00, 0x0f00, 0x0f00, 0x0f00, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0xff00, 0xffff, 0x00ff, 0x0000, 0xff00, 0xffff, 0x00ff, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000]
-
-    r = r_expected.map.with_index do |expected, r|
-      tmp = io.read_uint16
-      puts "entity[R#{r}] = #{tmp}"
-      case expected
-      when nil
-        # no verification
-      when Array
-        raise "Unexpected value for entity[R#{r}]: #{tmp} (expected #{expected})" unless expected.include? tmp
-      else
-        raise "Unexpected value for entity[R#{r}]: #{tmp} (expected #{expected})" unless tmp == expected
-      end
+    raise "FOR SCIENCE!" unless type == "SUBTERRANEAN_ANIMAL_PEOPLES"
+    q = 126.times.map do |q|
+      tmp = io.read_int16
+      puts "entity[Q#{q}] = #{tmp}"
       tmp
     end
 
